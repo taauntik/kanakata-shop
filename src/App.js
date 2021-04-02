@@ -10,7 +10,8 @@ import Orders from "./components/Orders/Orders";
 import firebase from "firebase/app";
 import firebaseConfig from "./firebase.config";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import { Button } from "react-bootstrap";
+import Spinner from "react-bootstrap/Spinner";
+import CheckOut from "./components/CheckOut/CheckOut";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -26,9 +27,11 @@ function App() {
     email: "",
   });
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch("https://rhubarb-cobbler-67677.herokuapp.com/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => {
+        setProducts(data);
+      });
   }, []);
 
   // const handleProduct = () => {
@@ -44,15 +47,25 @@ function App() {
     <UserContext.Provider value={[user, setUser]}>
       <Router>
         <Header checkUser={[user, setUser]} />
+        {/* <Spinner animation="grow" /> */}
         <Route exact path="/">
           <div style={{ display: "flex" }} className="product-container">
+            {!products.length && <Spinner className="m-5" animation="grow" />}
             {products.map((product) => (
               <Home product={product} />
             ))}
           </div>
         </Route>
         <Route exact path="/home">
-          <div style={{ display: "flex" }} className="product-container">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            className="product-container"
+          >
+            {!products.length && <Spinner className="m-5" animation="grow" />}
             {products.map((product) => (
               <Home product={product} />
             ))}
@@ -62,10 +75,13 @@ function App() {
           <Login checkUser={[user, setUser]} />
         </Route>
         <PrivateRoute path="/admin">
-          <Admin />
+          <Admin products={products} />
         </PrivateRoute>
         <PrivateRoute path="/orders">
           <Orders />
+        </PrivateRoute>
+        <PrivateRoute path="/checkout/:id">
+          <CheckOut />
         </PrivateRoute>
       </Router>
     </UserContext.Provider>

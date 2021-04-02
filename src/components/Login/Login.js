@@ -35,9 +35,9 @@ function Login({ checkUser }) {
   };
 
   return (
-    <div>
+    <div className="d-flex justify-content-center m-5">
       <Button onClick={handleGoogleSignIn} variant="primary">
-        Sign in with google
+        <h1>Sign in with google</h1>
       </Button>
     </div>
   );

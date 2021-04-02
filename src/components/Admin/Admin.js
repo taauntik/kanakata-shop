@@ -2,10 +2,11 @@ import React from "react";
 import { Nav } from "react-bootstrap";
 import Sidebar from "../Sidebar/Sidebar";
 
-function Admin() {
+function Admin({ products }) {
+  console.log(products);
   return (
     <div>
-      <Sidebar />
+      <Sidebar products={products} />
     </div>
   );
 }
