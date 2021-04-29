@@ -30,6 +30,7 @@ function App() {
     fetch("https://rhubarb-cobbler-67677.herokuapp.com/products")
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setProducts(data);
       });
   }, []);

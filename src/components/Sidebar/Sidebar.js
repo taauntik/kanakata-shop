@@ -6,7 +6,7 @@ import axios from "axios";
 export default function Sidebar({ products }) {
   const [addProduct, setAddProduct] = useState({
     productName: "",
-    price: "",
+    price: null,
     img: "",
   });
   const handleSubmit = (e) => {
@@ -22,27 +22,6 @@ export default function Sidebar({ products }) {
     alert("now you need to reload the website to see changes");
   };
 
-  // const handleImageUpload = (e) => {
-  //   console.log(e.target.files[0]);
-  //   const imageData = new FormData();
-  //   imageData.set("key", "d8876495fac39ce016bb8c77e3a4657d");
-  //   imageData.append("img", e.target.files[0]);
-  //   console.log(imageData);
-  //   fetch("https://api.imgbb.com/1/upload", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(imageData),
-  //   });
-  //   // axios
-  //   //   .post("https://api.imgbb.com/1/upload", imageData)
-  //   //   .then(function (response) {
-  //   //     console.log(response.data.data.display_url);
-  //   //   })
-  //   //   .catch(function (error) {
-  //   //     console.log(error);
-  //   //   });
-  // };
-
   const handleBlur = (e) => {
     const product = { ...addProduct };
     product[e.target.name] = e.target.value;
@@ -50,6 +29,23 @@ export default function Sidebar({ products }) {
   };
 
   console.log(products);
+
+  const handleImgUpload = (e) => {
+    console.log(e.target.files[0]);
+    const imgData = new FormData();
+    imgData.set("key", "9a1d578a8582fc4ff167ca0d19b415b3");
+    imgData.append("image", e.target.files[0]);
+
+    axios
+      .post("https://api.imgbb.com/1/upload", imgData)
+      .then((res) => {
+        const data = { ...addProduct };
+        data.img = res.data.data.display_url;
+        setAddProduct(data);
+        console.log(addProduct);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const deleteProduct = (id) => {
     console.log("We are working");
@@ -99,7 +95,7 @@ export default function Sidebar({ products }) {
       </Tab>
       <Tab eventKey="profile" title="Add Product">
         <Container>
-          <form action="" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <input
               className="form-control my-2"
               placeholder="Enter the product name"
@@ -113,7 +109,15 @@ export default function Sidebar({ products }) {
               placeholder="Enter the price of that product"
               name="price"
               onBlur={handleBlur}
-              type="text"
+              type="number"
+              required
+            />
+            <input
+              className="form-control my-2"
+              name="img"
+              placeholder="Product Image"
+              type="file"
+              onChange={handleImgUpload}
               required
             />
             <Button type="submit" variant="contained" color="primary">
